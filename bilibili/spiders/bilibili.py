@@ -2,14 +2,12 @@ import json
 import re
 
 from bilibili.items import BilibiliItem
-from scrapy import Request
 from scrapy.spiders import Spider
 from scrapy.utils.project import get_project_settings
 from scrapy_splash.request import SplashRequest
 
 
 settings = get_project_settings()
-headers = {'Referer': 'https://www.bilibili.com/'}
 
 
 class Bilibili(Spider):
@@ -49,17 +47,9 @@ class Bilibili(Spider):
         detail_info = json.loads(re.search(r'__playinfo__=(.*?)</script>', response.text).group(1))
         item = response.meta['item']
 
-        item['video_url'] = detail_info['data']['dash']['video'][0]['baseUrl']
-        item['audio_url'] = detail_info['data']['dash']['audio'][0]['baseUrl']
+        item['file_urls'] = [
+            detail_info['data']['dash']['video'][0]['baseUrl'],
+            detail_info['data']['dash']['audio'][0]['baseUrl'],
+        ]
 
-        yield Request(item['video_url'], headers=headers, callback=self.video_parse, meta={'item': item})
-
-    def video_parse(self, response, **kwargs):
-        item = response.meta['item']
-        item['video_stream'] = response.body
-        yield Request(item['audio_url'], headers=headers, callback=self.audio_parse, meta={'item': item})
-
-    def audio_parse(self, response, **kwargs):
-        item = response.meta['item']
-        item['audio_stream'] = response.body
         yield item
