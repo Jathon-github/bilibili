@@ -5,10 +5,11 @@
 
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
-
-
 import os
+
+from itemadapter import ItemAdapter
+from scrapy.spiders import Request
+from scrapy.pipelines.files import FilesPipeline as ScrapyFilesPipeline
 from scrapy.utils.project import get_project_settings
 
 
@@ -16,22 +17,17 @@ settings = get_project_settings()
 store = settings['FILES_STORE']
 
 
+class FilesPipeline(ScrapyFilesPipeline):
+    def get_media_requests(self, item, info):
+        headers = {'Referer': 'https://www.bilibili.com/'}
+        urls = ItemAdapter(item).get(self.files_urls_field, [])
+        return [Request(u, headers=headers) for u in urls]
+
+
 class BilibiliPipeline:
     def process_item(self, item, spider):
         title = item['title']
-        video_path = '%s/video/%s.mp4' % (store, title)
-        audio_path = '%s/audio/%s.mp4' % (store, title)
-        path = '%s/%s.mp4' % (store, title)
-
-        with open(video_path, 'wb') as video:
-            video.write(item['video_stream'])
-        with open(audio_path, 'wb') as audio:
-            audio.write(item['audio_stream'])
-
-        os.system('ffmpeg -i %s -i %s -c copy %s' % (video_path, audio_path, path))
-
-
-if not os.path.exists(store + '/video'):
-    os.makedirs(store + '/video')
-if not os.path.exists(store + '/audio'):
-    os.makedirs(store + '/audio')
+        video_path = '%s/%s.mp4' % (store, title)
+        file_paths = [store + file['path'] for file in item['files']]
+        cmd_str = ''.join(['-i %s ' % file_path for file_path in file_paths])
+        os.system('ffmpeg %s -c copy %s' % (cmd_str, video_path))
