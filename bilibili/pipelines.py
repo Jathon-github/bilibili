@@ -27,7 +27,9 @@ class FilesPipeline(ScrapyFilesPipeline):
 class BilibiliPipeline:
     def process_item(self, item, spider):
         title = item['title']
-        video_path = '%s/%s.mp4' % (store, title)
-        file_paths = [store + file['path'] for file in item['files']]
-        cmd_str = ''.join(['-i %s ' % file_path for file_path in file_paths])
+        video_path = '%s%s.mp4' % (store, title)
+        cmd_str = ''.join([
+            '-i %s%s ' % (store, file['path'])
+            for file in item['files']
+        ])
         os.system('ffmpeg %s -c copy %s' % (cmd_str, video_path))
