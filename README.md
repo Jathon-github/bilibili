@@ -31,8 +31,8 @@ $ git clone https://github.com/Jathon-github/bilibili.git
 ## 版本更新
 
 1. 修复视频标题中带空格时合成失败的 bug
-1. 取消 Scrapy 的日志显示
-1. 将 Dockerfile 中换源和下载 ffmpeg 的操作合并成一条语句
+2. 取消 Scrapy 的日志显示
+3. 将 Dockerfile 中换源和下载 ffmpeg 的操作合并成一条语句
 
 ## 法律声明
 
