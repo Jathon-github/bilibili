@@ -29,7 +29,7 @@ class BilibiliPipeline:
         title = item['title']
         video_path = '%s%s.mp4' % (store, title)
         cmd_str = ''.join([
-            '-i %s%s ' % (store, file['path'])
+            '-i "%s%s" ' % (store, file['path'])
             for file in item['files']
         ])
-        os.system('ffmpeg %s -c copy %s' % (cmd_str, video_path))
+        os.system('ffmpeg %s -c copy "%s"' % (cmd_str, video_path))

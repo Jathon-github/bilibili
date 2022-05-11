@@ -30,7 +30,9 @@ $ git clone https://github.com/Jathon-github/bilibili.git
 
 ## 版本更新
 
-1. 将软件源更换为国内阿里镜像，加速依赖包的下载。
+1. 修复视频标题中带空格时合成失败的 bug
+2. 取消 Scrapy 的日志显示
+3. 将 Dockerfile 中换源和下载 ffmpeg 的操作合并成一条语句
 
 ## 法律声明
 
