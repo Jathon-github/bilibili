@@ -1,17 +1,17 @@
 version: "3.8"
 
 services:
-  splash:
-    image: scrapinghub/splash:3.5
-    networks:
-      - brige-network
+#  splash:
+#    image: scrapinghub/splash:3.5
+#    networks:
+#      - brige-network
 
   spider:
     build: ./
     networks:
       - brige-network
-    depends_on:
-      - splash
+#    depends_on:
+#      - splash
     volumes:
       - ./:/source
     working_dir: /source

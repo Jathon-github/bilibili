@@ -19,9 +19,8 @@ store = settings['FILES_STORE']
 
 class FilesPipeline(ScrapyFilesPipeline):
     def get_media_requests(self, item, info):
-        headers = {'Referer': 'https://www.bilibili.com/'}
         urls = ItemAdapter(item).get(self.files_urls_field, [])
-        return [Request(u, headers=headers) for u in urls]
+        return [Request(u) for u in urls]
 
 
 class BilibiliPipeline:
